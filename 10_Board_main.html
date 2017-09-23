@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link rel="stylesheet" href="">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">-->
+    <title>Title</title>
+
+    <script>
+
+        function table_delete(tbody) {//테이블 지우기
+            var table = document.getElementById(tbody);
+
+            while(table.children.length>0){
+                table.removeChild(table.firstChild);
+            }
+        }
+        function login_Check(select) {
+
+            if(select == 'check') {//홈페이지 열었을때 로그인 상태 검사
+                var xml = new XMLHttpRequest();
+
+                var url = "http://192.168.56.1:8080/10_login.php";
+                xml.open("get", url, true);
+                xml.onreadystatechange = function () {
+                    if (xml.readyState == 4 && xml.status == 200) {
+                        var logcheck = (xml.responseText).split(',');
+                        if(logcheck[0] == 1){
+                            var logtable = document.getElementById("log_info");
+                            table_delete(logtable.id);
+
+                            var tr = document.createElement("tr");
+                            var td = document.createElement("td");
+
+                            td.innerHTML = "환영합니다" + logcheck[2]+"님";
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            td.innerHTML = "등급 : "+ logcheck[3];
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            td.innerHTML = "나이 : "+ logcheck[4];
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            var logout_button = document.createElement("input");
+                            logout_button.type = "submit";
+                            logout_button.name = "logout";
+                            logout_button.value = "로그아웃";
+                            td.appendChild(logout_button);
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            var input_write = document.createElement("input");
+                            input_write.type = "button";
+                            input_write.id = "write";
+                            input_write.value = "글쓰기";
+                            input_write.setAttribute("onclick", "board_wds('write')");
+                            td.appendChild(input_write);
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+
+                        }
+                    } else {
+
+                    }
+                }
+                xml.send();
+            }else if(select == 'log'){//로그인 눌렀을 경우
+                //로그인 하기
+                var xml = new XMLHttpRequest();
+                var id = document.getElementById("ID").value;
+                var pw = document.getElementById("password").value;
+
+                var url = "http://192.168.56.1:8080/10_login.php?ID="+id+"&password="+pw;
+                xml.open("get", url, true);
+                xml.onreadystatechange = function () {
+                    if (xml.readyState == 4 && xml.status == 200) {
+                        var logcheck = (xml.responseText).split(',');
+                        if(logcheck[0] == 1){
+                            var logtable = document.getElementById("log_info");
+                            table_delete(logtable.id);
+                            var tr = document.createElement("tr");
+                            var td = document.createElement("td");
+
+                            td.innerHTML = "환영합니다" + logcheck[2]+"님";
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            td.innerHTML = "등급 : "+ logcheck[3];
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            td.innerHTML = "나이 : "+ logcheck[4];
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            var logout_button = document.createElement("input");
+                            logout_button.type = "submit";
+                            logout_button.name = "logout";
+                            logout_button.value = "로그아웃";
+                            td.appendChild(logout_button);
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+
+                            td = document.createElement("td");
+                            tr = document.createElement("tr");
+                            var input_write = document.createElement("input");
+                            input_write.type = "button";
+                            input_write.id = "write";
+                            input_write.value = "글쓰기";
+                            input_write.setAttribute("onclick", "board_wds('write')");
+                            td.appendChild(input_write);
+                            tr.appendChild(td);
+                            logtable.appendChild(tr);
+                        }else if(logcheck[0] == 0){
+                            alert("아이디와 비밀번호를 잘못입력하셨습니다.");
+                        }
+                    } else {
+
+                    }
+                }
+                xml.send();
+            }
+        }
+        function board_wds(write) {
+            window.open("http://192.168.56.1:8080/10_board_write.php", "","menubar=1");
+        }
+        function board_list_(select) {
+
+            var xml = new XMLHttpRequest();
+
+            if(!isNaN(select)){
+                var search_result = document.getElementById("search_result");
+                var search_type = document.getElementById("search_type");
+                var url = "http://192.168.56.1:8080/10_Board_list.php?select=" + select + "&search_result="+search_result.value+"&search="+ search_type.value;
+
+                xml.open("GET", url, true);
+                xml.onreadystatechange = function () {
+                    if (xml.readyState == 4 && xml.status == 200) {
+                        var list = JSON.parse(xml.responseText);
+
+                        var board_count = document.getElementById("board_count");
+                        var board_page = document.getElementById("now_board_page");
+
+
+                        board_count.value = list[0][8];
+
+                        board_page.value = select;
+                        table_delete("board_list");
+                        table_delete("pg_nation");
+                        list_make(list, "board_list");
+                        page_nation(board_count.value);
+                    } else {}
+                }
+                xml.send();
+            }
+        }
+
+        function board_search_list() {
+            var search_result = document.getElementById("search_result");
+            var search_type = document.getElementById("search_type");
+            var select_search_list = document.getElementById("select_search_list").value;
+            var input_search = document.getElementById("input_search").value;
+
+            search_result.value = input_search;
+
+            if(select_search_list == '모두'){
+                search_type.value = 'default';
+            }else if(select_search_list == '작성자'){
+                search_type.value = 'user_id';
+            }else if(select_search_list == '제목'){
+                search_type.value = 'subject';
+            }else if(select_search_list == '내용'){
+                search_type.value = 'contents';
+            }
+
+            board_list_(1);
+
+        }
+
+        function page_nation(number) {
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            var pg_nation = document.getElementById("pg_nation");
+            td.colSpan = "6";
+
+            var a = document.createElement("a");
+
+            var board_page = document.getElementById("now_board_page");
+
+            var page_nation_count = 0;
+
+            var start_page_nation = parseInt(board_page.value/10)*10+1;
+
+            if(board_page.value != 0 && board_page.value%10 == 0){
+                start_page_nation -= 10;
+            }
+
+            if(parseInt(number/10+1)<10){
+                page_nation_count = parseInt(number/10+1);
+            }else{
+                page_nation_count = 10;
+            }
+
+            if(board_page.value >=2){
+                if(board_page.value >= 3){
+                    a.innerHTML = "<<";
+                    a.href = "javascript:board_list_("+1+")";
+                    td.appendChild(a);
+                    td.innerHTML += "&nbsp&nbsp&nbsp"
+                }
+                a.innerHTML = "<";
+                a.href = "javascript:board_list_("+(board_page.value-1)+")";
+                td.appendChild(a);
+                td.innerHTML += "&nbsp&nbsp&nbsp"
+            }
+
+            for(var i = start_page_nation; i<start_page_nation+page_nation_count; i++){
+
+                if(parseInt(number/10+1)+1 <= i){
+                    break;
+                }
+
+                a = document.createElement("a");
+                if(i == board_page.value){
+                    var b = document.createElement("B");
+                    b.innerHTML = i;
+                    a.appendChild(b);
+                }else {
+                    a.innerHTML = i;
+                }
+                a.href = "javascript:board_list_("+i+")";
+                td.appendChild(a);
+                td.innerHTML += "&nbsp&nbsp&nbsp"
+            }
+
+            if(board_page.value <= parseInt(number/10+1)){
+                if(board_page.value < parseInt(number/10+1)){
+                    a.innerHTML = ">";
+                    a.href = "javascript:board_list_("+(parseInt(board_page.value)+1)+")";
+                    td.appendChild(a);
+                    td.innerHTML += "&nbsp&nbsp&nbsp"
+                }
+                if(board_page.value < parseInt(number/10+1)-1) {
+                    a.innerHTML = ">>";
+                    a.href = "javascript:board_list_(" + parseInt(number / 10 + 1) + ")";
+                    td.appendChild(a);
+                    td.innerHTML += "&nbsp&nbsp&nbsp"
+                }
+            }
+            tr.appendChild(td);
+            pg_nation.appendChild(tr);
+        }
+        function board_contents(select) {//선택한 게시판 읽거나 지우거나 볼수 있는것
+            window.open("http://192.168.56.1:8080/10_board_contents.php?select="+select,"","menubar=1");
+        }
+        function list_make(list, where) {
+
+            var where = document.getElementById(where);
+            for(var i = 0; i<10; i++) {
+                if(list[i][0] == null){
+                    break;
+                }
+                var tr = document.createElement("tr");
+
+                var td = document.createElement("td");
+                td.innerHTML = list[i][0];
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                var a = document.createElement("a");
+                a.href = "javascript:board_contents("+list[i][0]+")";
+                a.innerHTML = list[i][4];
+                td.appendChild(a);
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = list[i][2];
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = list[i][3];
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = list[i][6];
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = list[i][7];
+                tr.appendChild(td);
+
+                where.appendChild(tr);
+            }
+        }
+    </script>
+</head>
+<body onload="login_Check('check'), board_list_(1)">
+<input type="hidden" id="board_count">
+<input type="hidden" id="now_board_page">
+<input type="hidden" id="search_result" value="default">
+<input type="hidden" id="search_type" value="default">
+    <form action="10_login.php" method="get">
+        <table class="table-bordered">
+            <tbody id="log_info">
+            <tr>
+                <td>ID</td><td><input type="text" id="ID"></td>
+            </tr>
+            <tr>
+                <td>P/W</td><td><input type="password" id="password"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="button" id="login" onclick="login_Check('log')" value="로그인"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <table class="table"  align="center" width="80%"  id="board" style="text-align: center">
+        <tr>
+            <td>검색</td>
+            <td colspan="3"><input type="text" id="input_search" style="width: 95%;"></td>
+            <td>
+                <select id="select_search_list">
+                    <option>
+                        모두
+                    </option>
+                    <option>
+                        작성자
+                    </option>
+                    <option>
+                        제목
+                    </option>
+                    <option>
+                        내용
+                    </option>
+                </select>
+            </td>
+            <td>
+                <input type="button" value="검색" id="search" onclick="board_search_list()">
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 5%;">번호</td>
+            <td style="width: 30%;">제목</td>
+            <td style="width: 5%;">유저ID</td>
+            <td style="width: 5%;">유저 이름</td>
+            <td style="width: 5%;">조회수</td>
+            <td style="width: 10%;">날짜</td>
+        </tr>
+        <tbody id="board_list">
+
+        </tbody>
+        <tbody id="pg_nation" align="center">
+
+        </tbody>
+    </table>
+</body>
+</html>
