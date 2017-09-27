@@ -9,6 +9,7 @@
 @$select = $_POST['select'];
 @$subject = $_POST['subject'];//제목
 @$content = $_POST['content'];//내용
+@$board_num = $_POST['board_no'];
 @$comment_board = $_POST['comment_board'];
 
 @$type = $_GET['type'];//댓글 수정,삭제 결정
@@ -26,7 +27,7 @@ $date = date('Y-m-d h:i:s');
 @$db_comment_insert = "insert into ycj_board (board_pid, user_id, user_name, contents, rreg_date) VALUES ($comment_board, '$id', '$name', '$content', '$date')";
 @$db_delete = "delete from ycj_board where board_id = $what";
 @$db_update = "UPDATE ycj_board SET contents = '$con', rreg_date = '$date' WHERE board_id = $what";
-
+@$db_board_update = "UPDATE ycj_board SET subject = '$subject', contents = '$content', rreg_date = '$date' WHERE board_id = $board_num";
 //-------
 
 //echo "<script>window.location.reload();</script>";//윈도우 새로고침
@@ -48,6 +49,11 @@ if(mysql_select_db('my_first_board', $db_select)) {
     }else if($select == '저장'){
         mysql_query(@$db_insert);
         echo "<script>window.close()</script>";
+    }else if($select == '게시글수정'){
+        mysql_query($db_board_update);
+        echo "<script>
+window.open('http://192.168.56.1:8080/10_board_contents.php?select='+'$board_num','','menubar=1')
+               window.close()</script>";
     }
 
 }
