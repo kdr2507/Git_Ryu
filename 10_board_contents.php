@@ -59,9 +59,13 @@ echo "
     <span>'$board_contents[6]'</span>
     <span>최종 수정일</span>
     <span>'$board_contents[7]'</span>
-    </h5>
-    
 ";
+if($board_contents[2] == @$_SESSION['id']) {
+    echo "<span><form action='10_board_write.php' method='get'>
+<input type='hidden' value='$board_contents[0]' name='hide'>
+<input type='submit' value='게시글수정' name='what'></form></span>";
+}
+echo "</h5>";
 echo "<table>
 <tr>
 <td colspan='2'></td><td><h1>$board_contents[4]</h1></td>
