@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Created by PhpStorm.
  * User: ehfle
@@ -111,4 +111,5 @@ if($db->user_insert_test() == true){
 }else{
     echo $db->user_insert_test();
 }
+//test
 ?>
