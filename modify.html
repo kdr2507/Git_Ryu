@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function ajax() {
+            var xml = new XMLHttpRequest();
+            var search_id = document.getElementById("search_id");
+            var url = "http://localhost:8080/userSearch.php?search_id="+search_id.value;
+            xml.open("get", url, true);
+            xml.onreadystatechange = function () {
+                if(xml.readyState == 4 && xml.status == 200){
+                    if(xml.responseText == false){
+                        alert("ID를 찾을수 없습니다.");
+                    }else{
+                        var userinfo = (xml.responseText).split(',');
+                        var userid = document.getElementById("userid");
+                        var name = document.getElementById("name");
+                        var password = document.getElementById("password");
+                        var classification = document.getElementById("classification")
+                        var gender = document.getElementById("gender");
+                        var phone = document.getElementById("phone");
+                        var email = document.getElementById("email");
+
+                        userid.value = userinfo[1];
+                        name.value = userinfo[3];
+                        password.value = userinfo[5];
+                        classification.value = userinfo[2];
+                        gender.value = userinfo[4];
+                        phone.value = userinfo[6];
+                        email.value = userinfo[7];
+                    }
+                }
+            }
+            xml.send()
+        }
+    </script>
+</head>
+<body>
+<form action="modifyProcess.php" method="POST">
+    수정할 ID를 입력하세요<br>
+    ID:<input id="search_id" name="search_id" type="text"><input type="button" value="사용자 정보 조회" onclick="ajax()">
+
+<table>
+    <tr>
+        <td>1. </td>
+        <td>사용자 ID : <input type="text" id="userid" name="userid"></td>
+    </tr>
+    <tr>
+        <td>2. </td>
+        <td>이름 : <input type="text" id="name" name="name"></td>
+    </tr>
+    <tr>
+        <td>3. </td>
+        <td>암호 : <input type="text" id="password" name="password"></td>
+    </tr>
+    <tr>
+        <td>4. </td>
+        <td>구분 : <select name="classification" id="classification">
+            <option value="staff" >교직원</option>
+            <option value="student" selected>학생</option>
+        </select></td>
+    </tr>
+    <tr>
+        <td>5. </td>
+        <td>성별 : <select name="gender" id="gender">
+            <option value="male">남성</option>
+            <option value="female" selected>여성</option>
+        </select></td>
+    </tr>
+    <tr>
+        <td>6. </td>
+        <td>전화번호 : <input type="text" name="phone" id="phone"></td>
+    </tr>
+    <tr>
+        <td>7. </td>
+        <td>이메일 : <input type="text" name="email" id="email"></td>
+    </tr>
+    <tr>
+        <td>8. </td>
+        <td><input type="submit" value="수정하기"></td>
+    </tr>
+</table>
+</form>
+</body>
+</html>

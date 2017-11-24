@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    function user_input_print_Ajax() {
+
+        var userid = document.getElementById("userid").value;
+        var username = document.getElementById("username").value;
+        var userpassword = document.getElementById("userpassword").value;
+        var classification = document.getElementById("classification").value;
+        var gender = document.getElementById("gender").value;
+        var phone = document.getElementById("phone").value;
+        var email = document.getElementById("email").value;
+
+        var xml = new XMLHttpRequest();
+        var url = "http://localhost:8080/registrationProcessing.php";
+        xml.open("post", url, true);
+        xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        xml.onreadystatechange = function () {
+            if(xml.readyState == 4 && xml.status == 200){
+                if(xml.responseText != "success"){
+                    var notinput_list = document.getElementById("notinput_list");
+                    notinput_list.innerHTML = xml.responseText;
+                }else if(xml.responseText == "success"){
+                    gohome();
+                }
+            }
+        }
+        xml.send("userid="+userid + "&username="+ username+"&userpassword="+userpassword + "&classification="+classification+
+        "&gender="+gender+"&phone="+phone+"&email="+email);
+    }
+    function gohome() {
+        location.href = 'main.html';
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 등록</title>
+</head>
+<body>
+<p id="notinput_list">
+
+</p>
+<!--사용자 입력 -->
+    <b>사용자 정보 등록</b><br>
+    <ol>
+        <li>사용자 ID: <input type="text" id="userid"></li>
+        <li>이름: <input type="text" id="username"></li>
+        <li>암호: <input type="text" id="userpassword"></li>
+        <li>구분: <select id="classification">
+                    <option value="staff" >교직원</option>
+                    <option value="student" selected>학생</option>
+                    </select></li>
+        <li>성별: <select id="gender">
+                    <option value="male">남성</option>
+                    <option value="female" selected>여성</option>
+                    </select></li>
+        <li>전화번호: <input type="text" id="phone"></li>
+        <li>이메일: <input type="text" id="email"></li>
+    </ol>
+    <input type="button" value="등록하기" onclick="user_input_print_Ajax()">
+</body>
+</html>
