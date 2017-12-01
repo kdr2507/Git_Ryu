@@ -68,7 +68,7 @@ class Updata_user_info{
     }
 
 }
-//sdfskdfl
+
 $update_user_info = new Updata_user_info($searchid,$userid, $name,$password,$classification,$gender,$phone,$email);
 $update_user_info->user_Update();
 ?>
